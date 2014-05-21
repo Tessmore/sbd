@@ -16,7 +16,7 @@ Use [npm](http://npmjs.org):
 
 ## How to
 
-```
+```javascript
 var text = "In I.C.T we have multiple challenges! This is a text of three sentences. Skip Mr. Money €10.00 right.";
 var sentences = tokenizer.sentences(text);
 
