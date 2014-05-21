@@ -1,0 +1,32 @@
+{
+  "name": "sbd",
+  "version": "0.0.1",
+  "description": "Split text into sentences",
+  "main": "lib/tokenizer.js",
+  "scripts": {
+    "test": "mocha -R spec"
+  },
+  "homepage": "http://github.com/Tessmore/sbd",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Tessmore/sbd.git"
+  },
+  "keywords": [
+    "sentence splitting",
+    "splitting",
+    "tokenize sentences",
+    "sentences",
+    "sentence"
+  ],
+  "author": {
+    "name": "Fabiën Tesselaar"
+  },
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "mocha": "1.7.x"
+  },
+  "dependencies": {
+    "sugar": "~1.4.1"
+  }
+}
