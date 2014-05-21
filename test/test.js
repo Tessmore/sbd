@@ -37,12 +37,12 @@ describe('Sentences token', function () {
         var entry = "Hello Barney.The bird in the word.";
         var sentences = tokenizer.sentences(entry);
 
-        it("should get 1 sentences", function () {
+        it("should get 2 sentences", function () {
             assert.equal(sentences.length, 2);
         });
     });
 
-    describe('Question mark / exlam', function () {
+    describe('Question- and exlamation mark', function () {
         var entry = "Hello this is my first sentence? There is also a second! A third";
         var sentences = tokenizer.sentences(entry);
 
@@ -60,7 +60,7 @@ describe('Sentences token', function () {
         });
     });
 
-    describe('It should skip numbers etc', function () {
+    describe('It should skip numbers', function () {
         var entry = "I paid 12.50 for that CD";
         var sentences = tokenizer.sentences(entry);
 
@@ -95,4 +95,15 @@ describe('Sentences token', function () {
             assert.equal(sentences.length, 2);
         });
     });
+
+    describe('If newlines are boundaries', function () {
+        var entry = "Search on http://google.com\n\nThen send me an email: gg@gggg.kk";
+        var sentences = tokenizer.sentences(entry, true);
+
+        console.log(sentences);
+        it("should get 2 sentences", function () {
+            assert.equal(sentences.length, 2);
+        });
+    });
+
 });

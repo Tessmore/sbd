@@ -1,11 +1,15 @@
 # Sentence Boundary Detection (SBD)
 
-Simple sentence detection:
+Simple sentence detection (i.e working ~95% of the time):
 
 * Split a text based on period, question- and exclamation marks.
     * Skips abbreviations
     * Skips numbers, currency
     * Skips urls, email address, phone nr.
+
+## Future work
+
+Currently, `sbd` fails to recognize sentences ending in an abbreviation, for example "The president lives in Washington, D.C." and I do not really see a viable option other than using a real classifier with proper training.
 
 ## Installation
 
