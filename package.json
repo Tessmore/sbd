@@ -1,6 +1,6 @@
 {
   "name": "sbd",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Split text into sentences",
   "main": "lib/tokenizer.js",
   "scripts": {
