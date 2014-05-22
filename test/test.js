@@ -69,6 +69,33 @@ describe('Sentences token', function () {
         });
     });
 
+    describe('It should skip list enumeration', function () {
+        var entry = "1. The item\n2. Another item";
+        var sentences = tokenizer.sentences(entry, true);
+
+        it("should get 2 sentences", function () {
+            assert.equal(sentences.length, 2);
+        });
+    });
+
+    describe('It should skip list enumeration', function () {
+        var entry = "a. The item\nzz. Another item";
+        var sentences = tokenizer.sentences(entry, true);
+
+        it("should get 2 sentences", function () {
+            assert.equal(sentences.length, 2);
+        });
+    });
+
+    describe('It should keep empty list enumeration', function () {
+        var entry = "a. The item\nzz.\nab.\ncd. Hello";
+        var sentences = tokenizer.sentences(entry, true);
+
+        it("should get 4 sentences", function () {
+            assert.equal(sentences.length, 4);
+        });
+    });
+
     describe('It should skip money with currency indication', function () {
         var entry = "I paid €12.50 for that CD";
         var sentences = tokenizer.sentences(entry);
@@ -96,11 +123,19 @@ describe('Sentences token', function () {
         });
     });
 
+    describe('It should skip weird keywords with a dot in it', function () {
+        var entry = "HELLO A.TOP IS NICE";
+        var sentences = tokenizer.sentences(entry);
+
+       it("should get 2 sentences", function () {
+            assert.equal(sentences.length, 1);
+        });
+    });
+
     describe('If newlines are boundaries', function () {
         var entry = "Search on http://google.com\n\nThen send me an email: gg@gggg.kk";
         var sentences = tokenizer.sentences(entry, true);
 
-        console.log(sentences);
         it("should get 2 sentences", function () {
             assert.equal(sentences.length, 2);
         });
