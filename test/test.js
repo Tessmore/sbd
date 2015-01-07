@@ -51,6 +51,15 @@ describe('Sentences token', function () {
         });
     });
 
+    describe('Questionmark is skipped inside brackets', function () {
+        var entry = "A sentence [example?] that should not (Though sometimes...) be two or more (but one!) sentences.";
+        var sentences = tokenizer.sentences(entry);
+
+        it("should get 1 sentence", function () {
+            assert.equal(sentences.length, 1);
+        });
+    });
+
     describe('Skip abbreviations', function () {
         var entry = "In I.C.T we have multiple challenges! There should only be two sentences.";
         var sentences = tokenizer.sentences(entry);
