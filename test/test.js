@@ -150,4 +150,14 @@ describe('Sentences token', function () {
         });
     });
 
+    describe('HTML markup is ignored', function () {
+        var entry = "<p>Hello this is my first sentence.</p> <br><br>There is also a second down the page.";
+        var sentences = tokenizer.sentences(entry);
+
+        it("should get 2 sentences", function () {
+            console.log(sentences);
+            assert.equal(sentences.length, 2);
+        });
+    });
+
 });
