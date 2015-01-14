@@ -27,7 +27,9 @@
     "mocha": "1.7.x"
   },
   "dependencies": {
-    "sanitize-html": "^1.4.3",
-    "sugar": "~1.4.1"
+    "sanitize-html": "^1.4.3"
+  },
+  "browser": {
+    "sanitize-html": "./lib/sanitize-html-browser.js"
   }
 }
