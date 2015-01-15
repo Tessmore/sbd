@@ -15,11 +15,31 @@ describe('Sentences token', function () {
         });
     });
 
+    describe('Difficult single sentence', function () {
+        var entry = "On Jan. 20, former Sen. Barack Obama became the 44th President of the U.S.";
+        var sentences = tokenizer.sentences(entry);
+
+        it('should get one sentence', function () {
+            console.log(sentences);
+            assert.equal(sentences.length, 1);
+        });
+    });
+
     describe('Two sentences', function () {
         var entry = "Hello this is my first sentence . There is also a second.";
         var sentences = tokenizer.sentences(entry);
 
         it("should get 2 sentences", function () {
+            assert.equal(sentences.length, 2);
+        });
+    });
+
+    describe('Difficult two sentences', function () {
+        var entry = "On Jan. 20, former Sen. Barack Obama became the 44th President of the U.S. Millions attended the Inauguration.";
+        var sentences = tokenizer.sentences(entry);
+
+        it('should get one sentence', function () {
+            console.log(sentences);
             assert.equal(sentences.length, 2);
         });
     });
@@ -155,7 +175,6 @@ describe('Sentences token', function () {
         var sentences = tokenizer.sentences(entry);
 
         it("should get 2 sentences", function () {
-            console.log(sentences);
             assert.equal(sentences.length, 2);
         });
     });
