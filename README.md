@@ -1,15 +1,14 @@
-# Sentence Boundary Detection (SBD)
+Sentence Boundary Detection (SBD)
+==================
 
-Simple sentence detection (i.e working ~95% of the time):
+Split text into sentences with a `vanilla` rule based approach (i.e working ~95% of the time).
+
 
 * Split a text based on period, question- and exclamation marks.
-    * Skips abbreviations
-    * Skips numbers, currency
-    * Skips urls, email address, phone nr.
-
-## Future work
-
-Currently, `sbd` fails to recognize sentences ending in an abbreviation, for example "The president lives in Washington, D.C." and I do not really see a viable option other than using a real classifier with proper training.
+    * Skips (most) abbreviations (Mr., Mrs., PhD.)
+    * Skips numbers/currency
+    * Skips urls, websites, email addresses, phone nr.
+    * Counts ellipsis and ?! as single punctuation
 
 ## Installation
 
@@ -23,15 +22,25 @@ Use [npm](http://npmjs.org):
 ```javascript
 var tokenizer = require('sbd');
 
-var text = "In I.C.T we have multiple challenges!
-This is a text of three sentences. Skip Mr. Money €10.00 right.";
-
+var text = "On Jan. 20, former Sen. Barack Obama became the 44th President of the U.S. Millions attended the Inauguration.";
 var sentences = tokenizer.sentences(text);
 
 // [
-//  'In I.C.T we have multiple challenges!',
-//  'This is a text of three sentences.',
-//  'Skip Mr. Money €10.00 right.'
+//  'On Jan. 20, former Sen. Barack Obama became the 44th President of the U.S.',
+//  'Millions attended the Inauguration.',
+// ]
+
+
+var text = "Got any problems? Open an issue on github.com!";
+var sentences = tokenizer.sentences(text);
+
+// [
+//  'Got any problems?',
+//  'Open an issue on github.com!',
 // ]
 ```
+
+## Notes
+
+I cannot find a "test data set" to rate the performance, but I can imagine it needs a trained data set to help with difficult edge cases. For example, sentences that do end with an abbreviation.
 

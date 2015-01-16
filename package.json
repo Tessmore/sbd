@@ -1,7 +1,7 @@
 {
   "name": "sbd",
-  "version": "0.0.5",
-  "description": "Split text into sentences",
+  "version": "0.0.6",
+  "description": "Split text into sentences with Sentence Boundary Detection (SBD).",
   "main": "lib/tokenizer.js",
   "scripts": {
     "test": "mocha -R spec"
@@ -12,11 +12,7 @@
     "url": "https://github.com/Tessmore/sbd.git"
   },
   "keywords": [
-    "sentence splitting",
-    "splitting",
-    "tokenize sentences",
-    "sentences",
-    "sentence"
+    "sentence", "detection", "boundary"
   ],
   "author": {
     "name": "Fabiën Tesselaar"
