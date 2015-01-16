@@ -38,6 +38,29 @@ var sentences = tokenizer.sentences(text);
 //  'Got any problems?',
 //  'Open an issue on github.com!',
 // ]
+
+// Sometimes newlines are important. Newlines can be treated as sentence endings
+
+file.txt
+"""
+Title of project: Hello World
+Author: Kenny
+
+May, 2012
+
+Lorem ipsum dolor sit amet. Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco (laboris nisi?) ut aliquip ex ea commodo consequat.
+"""
+
+var sentences = tokenizer.sentences(textFromFile, true);
+
+// [
+//  'Title of project: Hello World',
+//  'Author: Kenny',
+//  'May, 2012',
+//  'Lorem ipsum dolor sit amet.',
+//  'Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+//  'Ut enim ad minim veniam, quis nostrud exercitation ullamco (laboris nisi?) ut aliquip ex ea commodo consequat.'
+// ]
 ```
 
 ## Notes
