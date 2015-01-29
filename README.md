@@ -63,7 +63,12 @@ var sentences = tokenizer.sentences(textFromFile, true);
 // ]
 ```
 
+## Future work
+
+* Convert quotes to normalized unicode ""
+* Convert hex-symbols to normalized symbol (i.e &mdash -> &)
+* Force sentence breaking on new paragraphs (i.e </p> and <p> ==> \n\n ==> multiple newlines are sentence breaking);
+
 ## Notes
 
 I cannot find a "test data set" to rate the performance, but I can imagine it needs a trained data set to help with difficult edge cases. For example, sentences that do end with an abbreviation.
-
