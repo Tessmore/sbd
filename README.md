@@ -64,3 +64,10 @@ Lorem ipsum dolor sit amet. Consectetur adipiscing elit, sed do eiusmod tempor i
 //  'Ut enim ad minim veniam, quis nostrud exercitation ullamco (laboris nisi?) ut aliquip ex ea commodo consequat.'
 // ]
 ```
+
+
+## Contributing
+
+You can run unit tests with `npm test`. 
+
+If you feel something is missing, you can open an issue stating the problem sentence and desired result. If code is unclear give me a @mention. Pull requests are welcome.
