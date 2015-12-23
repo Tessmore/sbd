@@ -16,4 +16,17 @@ describe('HTML markup', function () {
         });
     });
 
+    describe('Non-markup is not interfered with', function () {
+        var entry = "We find that a < b works. But in turn, c > x.";
+        var sentences = tokenizer.sentences(entry, { sanitize: false });
+
+        it("should get 2 sentences", function () {
+            assert.equal(sentences.length, 2);
+        });
+        it("should not be escaped", function () {
+            assert(!/&lt;/.test(sentences[0]));
+            assert(!/&gt;/.test(sentences[1]));
+        });
+    });
+
 });

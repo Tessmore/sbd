@@ -63,6 +63,14 @@ var sentences = tokenizer.sentences(textFromFile, true);
 // ]
 ```
 
+The second argument can also be a configuration object, that can support the following values:
+
+* `newline_boundary`: the same as specifying the second argument as a boolean.
+* `sanitize`: set this to `false` in order to disable automatic HTML sanitization. While automatic
+  sanitization has to remain the default for backwards compatibility purposes, unless you are
+  specifically providing `sbd` with content you know to contain HTML it is recommended to switch
+  this off as it can mangle your content.
+
 ## Future work
 
 * Convert quotes to normalized unicode ""
