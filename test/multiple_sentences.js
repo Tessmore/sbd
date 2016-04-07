@@ -143,6 +143,17 @@ describe('Multiple sentences', function () {
         });
     });
 
+
+    describe('Sentences with a name ending a sentence', function () {
+        var entry = `If your boss assumes he can interrupt you any time and it’s "impacting the way you do your job," you should communicate that "you feel stretched," says Hill. A growing body of research shows that being “always on” hurts results.`
+        var sentences = tokenizer.sentences(entry, { "newline_boundaries": true });
+
+        it("should get 2 sentences", function () {
+            assert.equal(sentences.length, 2);
+        });
+    });
+
+
     describe('If newlines are boundaries (B)', function () {
         var entry = "FAMILIY HISTORY   ========================================== Nothing interesting";
         var sentences = tokenizer.sentences(entry, { "newline_boundaries": true });
