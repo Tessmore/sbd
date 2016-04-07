@@ -200,41 +200,54 @@ var Match  = require('./Match');
 var newline_placeholder = " @~@ ";
 var newline_placeholder_t = newline_placeholder.trim();
 
-// Split the entry into sentences.
-exports.sentences = function(text, options) {
-    if (!text || typeof text === "undefined" || text.length === 0)
-        return [];
 
-    /** Options processing */
-    var newline_boundary;
-    var do_sanitize = true;
-    if (typeof options === 'undefined') {
-        newline_boundary = false;
+// Split the entry into sentences.
+exports.sentences = function(text, user_options) {
+    if (!text || typeof text === "undefined" || text.length === 0) {
+        return [];
     }
-    else if (typeof options === 'object') {
-      newline_boundary = options.newline_boundary || false;
-      do_sanitize = typeof options.sanitize === 'undefined' ? true : options.sanitize;
+
+    var options = {
+        "newline_boundaries" : false,
+        "html_boundaries"    : false,
+        "sanitize"           : false,
+        "allowed_tags"       : false
+    };
+
+    if (typeof user_options === "boolean") {
+        // Deprecated quick option
+        options.newline_boundaries = true;
     }
     else {
-        newline_boundary = options;
+        // Extend options
+        for (var k in user_options) {
+            options[k] = user_options[k];
+        }
     }
 
-    text = do_sanitize ? sanitizeHtml(text, { "allowedTags" : [''] }) : text;
-
-    if (newline_boundary) {
+    if (options.newline_boundaries) {
         text = text.replace(/\n+|[-#=_+*]{4,}/g, newline_placeholder);
     }
 
-    var index = 0;
-    var temp  = [];
+    if (options.html_boundaries) {
+        text = text.replace(/(<br \/>)/g, "$1" + newline_placeholder);
+    }
+
+    if (options.sanitize || options.allowed_tags) {
+        if (! options.allowed_tags) {
+            options.allowed_tags = [""];
+        }
+
+        text = sanitizeHtml(text, { "allowedTags" : options.allowed_tags });
+    }
 
     // Split the text into words
     var words = text.match(/\S+/g); // see http://blog.tompawlak.org/split-string-into-tokens-javascript
-
+    var wordCount = 0;
+    var index = 0;
+    var temp  = [];
     var sentences = [];
     var current   = [];
-
-    var wordCount = 0;
 
     for (var i=0, L=words.length; i < L; i++) {
         wordCount++;
@@ -251,7 +264,7 @@ exports.sentences = function(text, options) {
             String.endsWithChar(words[i], "?!") ||
             words[i] === newline_placeholder_t)
         {
-            if (newline_boundary && words[i] === newline_placeholder_t) {
+            if ((options.newline_boundaries || options.html_boundaries) && words[i] === newline_placeholder_t) {
                 current.pop();
             }
 

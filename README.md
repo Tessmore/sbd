@@ -22,7 +22,7 @@ Use [npm](http://npmjs.org):
 var tokenizer = require('sbd');
 
 var text = "On Jan. 20, former Sen. Barack Obama became the 44th President of the U.S. Millions attended the Inauguration.";
-var sentences = tokenizer.sentences(text);
+var sentences = tokenizer.sentences(text, optional_options);
 
 // [
 //  'On Jan. 20, former Sen. Barack Obama became the 44th President of the U.S.',
@@ -31,43 +31,26 @@ var sentences = tokenizer.sentences(text);
 ```
 
 
-The second argument can also be a configuration object, that can support the following values:
+#### Optional options
 
-* `newline_boundary`: the same as specifying the second argument as a boolean.
-* `sanitize`: set this to `false` in order to disable automatic HTML sanitization. While automatic
-  sanitization has to remain the default for backwards compatibility purposes, unless you are
-  specifically providing `sbd` with content you know to contain HTML it is recommended to switch
-  this off as it can mangle your content.
-
-```javascript
-var options = { 
-   "newline_boundary": true, 
-   "sanitize": true
-};
-var sentences = tokenizer.sentences(textFromFile, options);
-
-textFromFile = "Title of project: Hello World
-Author: Kenny
-
-May, 2012
-
-Lorem ipsum dolor sit amet. Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco (laboris nisi?) ut aliquip ex ea commodo consequat.
-";
-
-// Gives
-// [
-//  'Title of project: Hello World',
-//  'Author: Kenny',
-//  'May, 2012',
-//  'Lorem ipsum dolor sit amet.',
-//  'Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-//  'Ut enim ad minim veniam, quis nostrud exercitation ullamco (laboris nisi?) ut aliquip ex ea commodo consequat.'
-// ]
 ```
+var options = {
+    "newline_boundaries" : false,
+    "html_boundaries"    : false,
+    "sanitize"           : false,
+    "allowed_tags"       : false
+};
+```
+
+* `newline_boundaries`, force sentence split at newlines
+* `html_boundaries`, force sentence split at specific tags (br, and closing p, div, ul, ol)
+* `sanitize`: If you don't expect nor want html in your text.
+* `allowed_tags`: To sanitize html, the library [santize-html](https://github.com/punkave/sanitize-html) is used. You can pass the allowed tags option.
+
 
 
 ## Contributing
 
-You can run unit tests with `npm test`. 
+You can run unit tests with `npm test`.
 
 If you feel something is missing, you can open an issue stating the problem sentence and desired result. If code is unclear give me a @mention. Pull requests are welcome.
