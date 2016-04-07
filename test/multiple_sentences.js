@@ -124,6 +124,25 @@ describe('Multiple sentences', function () {
         });
     });
 
+
+    describe('Sentences with quotations', function () {
+        var entry = "“If there’s no balance and your boss doesn’t provide support and work that’s meaningful, your chances of burning out are great.” What bothers most people in situations like these is “the lack of boundaries,” says Nancy Rothbard, the David Pottruck Professor of Management at the University of Pennsylvania’s Wharton School.";
+        var sentences = tokenizer.sentences(entry, true);
+
+        it("should get 2 sentences", function () {
+            assert.equal(sentences.length, 2);
+        });
+    });
+
+    describe('Sentences with quotations', function () {
+        var entry = "“If there’s no balance! And your boss doesn’t provide support and work that’s meaningful, your chances of burning out are great.” What bothers most people in situations like these is “the lack of boundaries,” says Nancy Rothbard, the David Pottruck Professor of Management at the University of Pennsylvania’s Wharton School.";
+        var sentences = tokenizer.sentences(entry, true);
+
+        it("should get 3 sentences", function () {
+            assert.equal(sentences.length, 3);
+        });
+    });
+
     describe('If newlines are boundaries (B)', function () {
         var entry = "FAMILIY HISTORY   ========================================== Nothing interesting";
         var sentences = tokenizer.sentences(entry, true);
