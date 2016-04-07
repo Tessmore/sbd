@@ -4,7 +4,10 @@
   "description": "Split text into sentences with Sentence Boundary Detection (SBD).",
   "main": "lib/tokenizer.js",
   "scripts": {
-    "test": "mocha -R spec"
+    "test": "mocha -R spec",
+    "build:js": "browserify lib/tokenizer.js --standalone tokenizer > dist/sbd.js",
+    "build:minify": "uglifyjs dist/sbd.js > dist/sbd.min.js",
+    "build": "npm run build:js && npm run build:minify"
   },
   "homepage": "http://github.com/Tessmore/sbd",
   "repository": {
