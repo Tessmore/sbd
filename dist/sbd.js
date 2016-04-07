@@ -86,8 +86,9 @@ exports.isDottedAbbreviation = function(word) {
 
 // TODO look for next words, if multiple capitalized -> not sentence ending
 exports.isCustomAbbreviation = function(str) {
-    if (str.length <= 3)
+    if (str.length <= 3) {
         return true;
+    }
 
     return this.isCapitalized(str);
 }
@@ -230,7 +231,7 @@ exports.sentences = function(text, user_options) {
     }
 
     if (options.html_boundaries) {
-        text = text.replace(/(<br \/>)/g, "$1" + newline_placeholder);
+        text = text.replace(/(<br\s*\/?>|<\/[p|div|ul|ol]>)/g, "$1" + newline_placeholder);
     }
 
     if (options.sanitize || options.allowed_tags) {
@@ -286,11 +287,9 @@ exports.sentences = function(text, user_options) {
         // Exception: The next sentence starts with a word (non abbreviation)
         //            that has a capital letter.
         if (String.endsWithChar(words[i], '.')) {
-
             // Check if there is a next word
+            // This probably needs to be improved with machine learning
             if (i+1 < L) {
-                // This should be improved with machine learning
-
                 // Single character abbr.
                 if (words[i].length === 2 && isNaN(words[i].charAt(0))) {
                     continue;
@@ -313,8 +312,10 @@ exports.sentences = function(text, user_options) {
                         continue;
                     }
 
-                    if (Match.isNumber(words[i+1]) && Match.isCustomAbbreviation(words[i])) {
-                        continue;
+                    if (Match.isNumber(words[i+1])) {
+                        if (Match.isCustomAbbreviation(words[i])) {
+                            continue;
+                        }
                     }
                 }
                 else {
@@ -325,7 +326,11 @@ exports.sentences = function(text, user_options) {
 
                     //// Skip abbreviations
                     // Short words + dot or a dot after each letter
-                    if (Match.isDottedAbbreviation(words[i]) || Match.isCustomAbbreviation(words[i])) {
+                    if (Match.isDottedAbbreviation(words[i])) {
+                        continue;
+                    }
+
+                    if (Match.isNameAbbreviation(wordCount, words.slice(i, 5))) {
                         continue;
                     }
                 }
@@ -366,8 +371,9 @@ exports.sentences = function(text, user_options) {
         }
     }
 
-    if (current.length)
+    if (current.length) {
         sentences.push(current);
+    }
 
     /** After processing */
     var result   = [];
@@ -378,7 +384,7 @@ exports.sentences = function(text, user_options) {
         return s.length > 0;
     });
 
-    for (i=0; i < sentences.length; i++) {
+    for (var i=0; i < sentences.length; i++) {
         sentence = sentences[i].join(" ");
 
         // Single words, could be "enumeration lists"
