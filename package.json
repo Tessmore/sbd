@@ -15,7 +15,9 @@
     "url": "https://github.com/Tessmore/sbd.git"
   },
   "keywords": [
-    "sentence", "detection", "boundary"
+    "sentence",
+    "detection",
+    "boundary"
   ],
   "author": {
     "name": "Fabiën Tesselaar"
