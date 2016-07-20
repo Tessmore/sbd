@@ -42,4 +42,26 @@ describe('Abbreviations in sentences', function () {
             assert.equal(sentences.length, 2);
         });
     });
+
+
+    describe('Skip two worded abbreviations', function () {
+        var entry = "Claims 1–6 and 15–26 are rejected under pre-AIA 35 USC § 103(a) as being unpatentable over Chalana et al. (US 2012/0179503) in view of Oh (US 2013/0013993).";
+        var sentences = tokenizer.sentences(entry);
+
+        it("should get 1 sentence", function () {
+            assert.equal(sentences.length, 1);
+        });
+    });
+
+
+    describe('Skip two worded abbreviations', function () {
+        var entry = "Et al. is an abbreviation of the Latin loanphrase et alii, meaning and others. It is similar to etc. (short for et cetera, meaning and the rest), but whereas etc. applies to things, et al. applies to people.";
+        var sentences = tokenizer.sentences(entry);
+
+        console.log(sentences)
+
+        it("should get 2 sentences", function () {
+            assert.equal(sentences.length, 2);
+        });
+    });
 });
