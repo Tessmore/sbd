@@ -1,6 +1,6 @@
 {
   "name": "sbd",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Split text into sentences with Sentence Boundary Detection (SBD).",
   "main": "lib/tokenizer.js",
   "scripts": {
@@ -25,7 +25,7 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "mocha": "1.7.x"
+    "mocha": "3.0.x"
   },
   "dependencies": {
     "sanitize-html": "^1.11.2"

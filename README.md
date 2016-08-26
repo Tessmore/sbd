@@ -56,3 +56,12 @@ var options = {
 You can run unit tests with `npm test`.
 
 If you feel something is missing, you can open an issue stating the problem sentence and desired result. If code is unclear give me a @mention. Pull requests are welcome.
+
+
+## Building the (minified) scripts
+
+```
+npm install -g browserify
+
+npm run-script build
+```
