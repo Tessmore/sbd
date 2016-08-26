@@ -64,4 +64,22 @@ describe('Abbreviations in sentences', function () {
             assert.equal(sentences.length, 2);
         });
     });
+
+    describe('Use other languages', function () {
+        var entry = "Trzeba tu coś napisać, np. fragment odnoszący się do pkt. 3 wcześniejszego tekstu.";
+        var sentencesEN = tokenizer.sentences(entry);
+        var sentencesPL = tokenizer.sentences(entry,{abbreviations:["np","pkt"]});
+
+
+        it("should get 1 sentence", function () {
+            console.log("#",sentencesEN, sentencesPL, sentencesPL.length)
+            assert.equal(sentencesEN.length, 3);
+            assert.equal(sentencesPL.length, 1);
+        });
+
+        it("should not permanently override abbreviations", function() {
+            var sentences = tokenizer.sentences(entry);
+            assert.equal(sentences.length, 3);
+        })
+    });
 });
