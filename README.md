@@ -38,7 +38,8 @@ var options = {
     "newline_boundaries" : false,
     "html_boundaries"    : false,
     "sanitize"           : false,
-    "allowed_tags"       : false
+    "allowed_tags"       : false,
+    "abbreviations"      : null
 };
 ```
 
@@ -46,6 +47,7 @@ var options = {
 * `html_boundaries`, force sentence split at specific tags (br, and closing p, div, ul, ol)
 * `sanitize`: If you don't expect nor want html in your text.
 * `allowed_tags`: To sanitize html, the library [santize-html](https://github.com/punkave/sanitize-html) is used. You can pass the allowed tags option.
+* `abbreviations`: list of abbreviations to override the original ones for use with other languages. Don't put dots in abbreviations.
 
 
 
