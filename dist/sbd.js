@@ -222,7 +222,7 @@ var newline_placeholder_t = newline_placeholder.trim();
 
 // Split the entry into sentences.
 exports.sentences = function(text, user_options) {
-    if (!text || typeof text === "undefined" || text.length === 0) {
+    if (!text || typeof text !== "string" || !text.length) {
         return [];
     }
 
@@ -264,12 +264,17 @@ exports.sentences = function(text, user_options) {
     }
 
     // Split the text into words
-    var words = text.match(/\S+/g); // see http://blog.tompawlak.org/split-string-into-tokens-javascript
+    var words = text.trim().match(/\S+/g); // see http://blog.tompawlak.org/split-string-into-tokens-javascript
     var wordCount = 0;
     var index = 0;
     var temp  = [];
     var sentences = [];
     var current   = [];
+
+    // If given text is only whitespace (or nothing of \S+)
+    if (!words || !words.length) {
+        return [];
+    }
 
     for (var i=0, L=words.length; i < L; i++) {
         wordCount++;

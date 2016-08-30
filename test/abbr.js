@@ -58,8 +58,6 @@ describe('Abbreviations in sentences', function () {
         var entry = "Et al. is an abbreviation of the Latin loanphrase et alii, meaning and others. It is similar to etc. (short for et cetera, meaning and the rest), but whereas etc. applies to things, et al. applies to people.";
         var sentences = tokenizer.sentences(entry);
 
-        console.log(sentences)
-
         it("should get 2 sentences", function () {
             assert.equal(sentences.length, 2);
         });
@@ -72,7 +70,7 @@ describe('Abbreviations in sentences', function () {
 
 
         it("should get 1 sentence", function () {
-            console.log("#",sentencesEN, sentencesPL, sentencesPL.length)
+            // console.log("#",sentencesEN, sentencesPL, sentencesPL.length)
             assert.equal(sentencesEN.length, 3);
             assert.equal(sentencesPL.length, 1);
         });
