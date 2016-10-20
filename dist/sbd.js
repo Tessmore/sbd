@@ -264,7 +264,9 @@ exports.sentences = function(text, user_options) {
     }
 
     // Split the text into words
-    var words = text.trim().match(/\S+/g); // see http://blog.tompawlak.org/split-string-into-tokens-javascript
+    // - see http://blog.tompawlak.org/split-string-into-tokens-javascript
+    var words = text.trim().match(/\S+|\n/g);
+
     var wordCount = 0;
     var index = 0;
     var temp  = [];
