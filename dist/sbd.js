@@ -227,11 +227,12 @@ exports.sentences = function(text, user_options) {
     }
 
     var options = {
-        "newline_boundaries" : false,
-        "html_boundaries"    : false,
-        "sanitize"           : false,
-        "allowed_tags"       : false,
-        "abbreviations"      : null
+        "newline_boundaries"  : false,
+        "html_boundaries"     : false,
+        "html_boundaries_tags": ["p","div","ul","ol"],
+        "sanitize"            : false,
+        "allowed_tags"        : false,
+        "abbreviations"       : null
     };
 
     if (typeof user_options === "boolean") {
@@ -252,7 +253,9 @@ exports.sentences = function(text, user_options) {
     }
 
     if (options.html_boundaries) {
-        text = text.replace(/(<br\s*\/?>|<\/(p|div|ul|ol)>)/g, "$1" + newline_placeholder);
+        var html_boundaries_regexp = "(<br\\s*\\/?>|<\\/(" + options.html_boundaries_tags.join("|") + ")>)";
+        var re = new RegExp(html_boundaries_regexp, "g");
+        text = text.replace(re, "$1" + newline_placeholder);
     }
 
     if (options.sanitize || options.allowed_tags) {

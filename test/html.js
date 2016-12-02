@@ -47,4 +47,13 @@ describe('HTML markup', function () {
             assert.equal(sentences.length, 4);
         });
     });
+
+    describe('List items boundaries (li) split sentences.', function () {
+        var entry = "<li>Lorem ipsum dolor sit amet, interdum nulla, ipsum id vivamus</li><li>Suspendisse pellentesque, porttitor alias</li><li>Nulla in lacus</li>";
+        var sentences = tokenizer.sentences(entry, { sanitize: false, "html_boundaries": true, "html_boundaries_tags": ["li", "div"] });
+
+        it("should get 3 sentences", function () {
+            assert.equal(sentences.length, 3);
+        });
+    });
 });
