@@ -30,12 +30,21 @@ describe('HTML markup', function () {
     });
 
 
-    describe('Closing html boundaries (br, p, div) split sentences.', function () {
+    describe('Closing html boundaries (br, p) split sentences.', function () {
         var entry = "What the Experts Say <br /> <p>In certain circumstances:</p> “working for a manager who’s task-oriented and has a high need for achievement can be motivating,” says Linda Hill";
         var sentences = tokenizer.sentences(entry, { sanitize: false, "html_boundaries": true });
 
         it("should get 3 sentences", function () {
             assert.equal(sentences.length, 3);
+        });
+    });
+
+    describe('Closing html boundaries (div) split sentences.', function () {
+        var entry = "<div>Lorem ipsum dolor sit amet, semper laoreet per.</div> <div>Dui pede donec, fermentum vivamus.</div> <div>Tellus vivamus ipsum.</div> <div>Elit eu nam.</div>";
+        var sentences = tokenizer.sentences(entry, { sanitize: false, "html_boundaries": true });
+
+        it("should get 4 sentences", function () {
+            assert.equal(sentences.length, 4);
         });
     });
 });
