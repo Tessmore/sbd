@@ -17,7 +17,7 @@ describe('Save newlines', function () {
     });
 
     describe('Sentence without lists', function () {
-        var entry = "First sentence... Another sentence.\nThis is a new paragraph";
+        var entry = "First sentence... Another sentence.\nThis is a new paragraph.";
         var sentences = tokenizer.sentences(entry);
 
         it('second sentence should have newlines', function () {
@@ -31,6 +31,34 @@ describe('Save newlines', function () {
 
         it('second sentence should have newlines', function () {
             assert.equal(sentences.length, 5);
+        });
+    });
+
+
+    describe('Multiline strings', function () {
+        var entry = "How now brown cow.\
+        \
+        Peter Piper Picked a peck of pickled peppers. A peck of pickled peppers peter piper picked.";
+
+        var sentences = tokenizer.sentences(entry);
+
+        it('Should have 3 sentences ending in periods', function () {
+            assert.equal(sentences[0], "How now brown cow.");
+            assert.equal(sentences[1], "Peter Piper Picked a peck of pickled peppers.");
+        });
+    });
+
+
+    describe('Template multiline strings', function () {
+        var entry = `How now brown cow.
+
+        Peter Piper Picked a peck of pickled peppers. A peck of pickled peppers peter piper picked.`;
+
+        var sentences = tokenizer.sentences(entry, { "newline_boundaries":  true });
+
+        it('Should have 3 sentences ending in periods', function () {
+            assert.equal(sentences[0], "How now brown cow.");
+            assert.equal(sentences[1], "Peter Piper Picked a peck of pickled peppers.");
         });
     });
 });
