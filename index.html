@@ -22,25 +22,34 @@
         }
     </style>
 
-    <script src="dist/sbd.min.js"></script>
+    <script src="dist/sbd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular.min.js"></script>
 
     <script type="text/javascript">
         var app = angular.module('sbdApp', []);
 
         app.controller('Index', function($scope) {
+            $scope.checkOptions = {
+                "newline_boundaries" : true,
+                "html_boundaries"    : false,
+                "sanitize"           : false
+            };
+
+            $scope.userOptions = angular.copy($scope.checkOptions);
+
             $scope.textContent = "On Jan. 20, former Sen. Barack Obama became the 44th President of the U.S. Millions attended the Inauguration.";
         });
 
+
         app.filter('tokenize', function() {
-            return function(input) {
-                return tokenizer.sentences(input);
+            return function(input, options) {
+                return tokenizer.sentences(input, options);
             };
         });
 
         app.filter('pluralize', function() {
-            return function(input) {
-                var len = tokenizer.sentences(input).length || 0;
+            return function(input, options) {
+                var len = tokenizer.sentences(input, options).length || 0;
 
                 if (len > 1) {
                     return len + " sentences";
@@ -69,6 +78,7 @@
             <div class="col-md-12">
                 <h1 class="page-header">Sentence Boundary Detection (SBD).</h1>
                 <p class="lead">Split text into sentences with a `vanilla` rule based approach (i.e working ~95% of the time).</p>
+
                 <ul>
                     <li>Split a text based on period, question- and exclamation marks.</li>
                     <li>Skips (most) abbreviations (Mr., Mrs., PhD.)</li>
@@ -78,6 +88,7 @@
                 </ul>
             </div>
         </div>
+
 
         <div class="row padpad">
             <div class="col-md-6">
@@ -92,10 +103,35 @@
                     <label>Your results will appear here:</label>
 
                     <div>
-                        <pre id="results">{{textContent | tokenize | json}}</pre>
-                        <div class="help-block">{{textContent | pluralize }}</div>
+                        <pre id="results">{{ textContent | tokenize:userOptions | json }}</pre>
+                        <div class="help-block">{{ textContent | pluralize:userOptions }}</div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Toggle options:</h4>
+
+                <div class="col-md-2" ng-repeat="(key, opt) in checkOptions track by $index">
+                    <div class="checkbox">
+                        <label>
+                          <input type="checkbox" ng-model="userOptions[key]"> {{ ::key }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <ul style="margin-top:8px;">
+                    <li><code>newline_boundaries</code>: Sentence split at newlines</li>
+                    <li><code>html_boundaries</code>: Sentence split at specific tags (br, and closing p, div, ul, ol)</li>
+                    <li><code>sanitize</code>: If you do not expect, or do not want html in your output</li>
+                </ul>
+
+                <a href="https://github.com/Tessmore/sbd#optional-options">View all options</a>
             </div>
         </div>
 

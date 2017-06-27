@@ -1,57 +1,75 @@
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.tokenizer=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-
-var abbreviations = [
-    "ie",
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.tokenizer = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var abbreviations;
+var englishAbbreviations = [
+    "al",
+    "adj",
+    "assn",
+    "Ave",
+    "BSc", "MSc",
+    "Cell",
+    "Ch",
+    "Co",
+    "cc",
+    "Corp",
+    "Dem",
+    "Dept",
+    "ed",
     "eg",
+    "Eq",
+    "Eqs",
+    "est",
+    "est",
+    "etc",
+    "Ex",
     "ext", // + number?
     "Fig",
     "fig",
     "Figs",
     "figs",
-    "et al",
-    "Co",
-    "Corp",
-    "Ave",
+    "i.e",
+    "ie",
     "Inc",
-    "Ex",
-    "Viz",
-    "vs",
-    "Vs",
-    "repr",
-    "Rep",
-    "Dem",
-    "trans",
-    "Vol",
+    "inc",
+    "Jan","Feb","Mar","Apr","Jun","Jul","Aug","Sep","Sept","Oct","Nov","Dec",
+    "jr",
+    "mi",
+    "Miss", "Mrs", "Mr", "Ms",
+    "Mol",
+    "mt",
+    "mts",
+    "no",
+    "Nos",
+    "PhD", "MD", "BA", "MA", "MM",
+    "pl",
+    "pop",
     "pp",
-    "rev",
-    "est",
+    "Prof", "Dr",
+    "pt",
     "Ref",
     "Refs",
-    "Eq",
-    "Eqs",
-    "Ch",
+    "Rep",
+    "repr",
+    "rev",
     "Sec",
     "Secs",
-    "mi",
-    "Dept",
-
-    "Univ",
-    "Nos",
-    "No",
-    "Mol",
-    "Cell",
-
-    "Miss", "Mrs", "Mr", "Ms",
-    "Prof", "Dr",
     "Sgt", "Col", "Gen", "Rep", "Sen",'Gov', "Lt", "Maj", "Capt","St",
-
-    "Sr", "Jr", "jr", "Rev",
-    "PhD", "MD", "BA", "MA", "MM",
-    "BSc", "MSc",
-
-    "Jan","Feb","Mar","Apr","Jun","Jul","Aug","Sep","Sept","Oct","Nov","Dec",
-    "Sun","Mon","Tu","Tue","Tues","Wed","Th","Thu","Thur","Thurs","Fri","Sat"
+    "Sr", "sr", "Jr", "jr", "Rev",
+    "Sun","Mon","Tu","Tue","Tues","Wed","Th","Thu","Thur","Thurs","Fri","Sat",
+    "trans",
+    "Univ",
+    "Viz",
+    "Vol",
+    "vs",
+    "v",
 ];
+
+exports.setAbbreviations = function(abbr) {
+    if(abbr){
+        abbreviations = abbr;
+    } else {
+        abbreviations = englishAbbreviations;
+    }
+}
 
 exports.isCapitalized = function(str) {
     return /^[A-Z][a-z].*/.test(str) || this.isNumber(str);
@@ -86,8 +104,9 @@ exports.isDottedAbbreviation = function(word) {
 
 // TODO look for next words, if multiple capitalized -> not sentence ending
 exports.isCustomAbbreviation = function(str) {
-    if (str.length <= 3)
+    if (str.length <= 3) {
         return true;
+    }
 
     return this.isCapitalized(str);
 }
@@ -200,32 +219,69 @@ var Match  = require('./Match');
 var newline_placeholder = " @~@ ";
 var newline_placeholder_t = newline_placeholder.trim();
 
+
 // Split the entry into sentences.
-exports.sentences = function(text, newline_boundary) {
-    if (text.length === 0)
+exports.sentences = function(text, user_options) {
+    if (!text || typeof text !== "string" || !text.length) {
         return [];
-
-    text = sanitizeHtml(text, { "allowedTags" : [''] });
-
-    /** Preprocessing */
-    if (typeof newline_boundary === 'undefined') {
-        newline_boundary = false;
     }
 
-    if (newline_boundary) {
+    var options = {
+        "newline_boundaries"  : false,
+        "html_boundaries"     : false,
+        "html_boundaries_tags": ["p","div","ul","ol"],
+        "sanitize"            : false,
+        "allowed_tags"        : false,
+        "abbreviations"       : null
+    };
+
+
+    if (typeof user_options === "boolean") {
+        // Deprecated quick option
+        options.newline_boundaries = true;
+    }
+    else {
+        // Extend options
+        for (var k in user_options) {
+            options[k] = user_options[k];
+        }
+    }
+
+    Match.setAbbreviations(options.abbreviations);
+
+
+    if (options.newline_boundaries) {
         text = text.replace(/\n+|[-#=_+*]{4,}/g, newline_placeholder);
     }
 
-    var index = 0;
-    var temp  = [];
+    if (options.html_boundaries) {
+        var html_boundaries_regexp = "(<br\\s*\\/?>|<\\/(" + options.html_boundaries_tags.join("|") + ")>)";
+        var re = new RegExp(html_boundaries_regexp, "g");
+        text = text.replace(re, "$1" + newline_placeholder);
+    }
+
+    if (options.sanitize || options.allowed_tags) {
+        if (! options.allowed_tags) {
+            options.allowed_tags = [""];
+        }
+
+        text = sanitizeHtml(text, { "allowedTags" : options.allowed_tags });
+    }
 
     // Split the text into words
-    var words = text.match(/\S+/g); // see http://blog.tompawlak.org/split-string-into-tokens-javascript
+    // - see http://blog.tompawlak.org/split-string-into-tokens-javascript
+    var words = text.trim().match(/\S+|\n/g);
 
+    var wordCount = 0;
+    var index = 0;
+    var temp  = [];
     var sentences = [];
     var current   = [];
 
-    var wordCount = 0;
+    // If given text is only whitespace (or nothing of \S+)
+    if (!words || !words.length) {
+        return [];
+    }
 
     for (var i=0, L=words.length; i < L; i++) {
         wordCount++;
@@ -233,7 +289,7 @@ exports.sentences = function(text, newline_boundary) {
         // Add the word to current sentence
         current.push(words[i]);
 
-        // Sub-sentences (Bijzin?), reset counter
+        // Sub-sentences, reset counter
         if (~words[i].indexOf(',')) {
             wordCount = 0;
         }
@@ -242,7 +298,7 @@ exports.sentences = function(text, newline_boundary) {
             String.endsWithChar(words[i], "?!") ||
             words[i] === newline_placeholder_t)
         {
-            if (newline_boundary && words[i] === newline_placeholder_t) {
+            if ((options.newline_boundaries || options.html_boundaries) && words[i] === newline_placeholder_t) {
                 current.pop();
             }
 
@@ -254,15 +310,19 @@ exports.sentences = function(text, newline_boundary) {
             continue;
         }
 
+
+        if (String.endsWithChar(words[i], "\"") || String.endsWithChar(words[i], "”")) {
+            // endQuote = words[i].slice(-1);
+            words[i] = words[i].slice(0, -1);
+        }
+
         // A dot might indicate the end sentences
         // Exception: The next sentence starts with a word (non abbreviation)
         //            that has a capital letter.
         if (String.endsWithChar(words[i], '.')) {
-
             // Check if there is a next word
+            // This probably needs to be improved with machine learning
             if (i+1 < L) {
-                // This should be improved with machine learning
-
                 // Single character abbr.
                 if (words[i].length === 2 && isNaN(words[i].charAt(0))) {
                     continue;
@@ -285,8 +345,10 @@ exports.sentences = function(text, newline_boundary) {
                         continue;
                     }
 
-                    if (Match.isNumber(words[i+1]) && Match.isCustomAbbreviation(words[i])) {
-                        continue;
+                    if (Match.isNumber(words[i+1])) {
+                        if (Match.isCustomAbbreviation(words[i])) {
+                            continue;
+                        }
                     }
                 }
                 else {
@@ -297,7 +359,11 @@ exports.sentences = function(text, newline_boundary) {
 
                     //// Skip abbreviations
                     // Short words + dot or a dot after each letter
-                    if (Match.isDottedAbbreviation(words[i]) || Match.isCustomAbbreviation(words[i])) {
+                    if (Match.isDottedAbbreviation(words[i])) {
+                        continue;
+                    }
+
+                    if (Match.isNameAbbreviation(wordCount, words.slice(i, 5))) {
                         continue;
                     }
                 }
@@ -338,8 +404,9 @@ exports.sentences = function(text, newline_boundary) {
         }
     }
 
-    if (current.length)
+    if (current.length) {
         sentences.push(current);
+    }
 
     /** After processing */
     var result   = [];
@@ -350,7 +417,7 @@ exports.sentences = function(text, newline_boundary) {
         return s.length > 0;
     });
 
-    for (i=0; i < sentences.length; i++) {
+    for (var i=0; i < sentences.length; i++) {
         sentence = sentences[i].join(" ");
 
         // Single words, could be "enumeration lists"
