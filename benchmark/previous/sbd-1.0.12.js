@@ -1,4 +1,4 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.tokenizer = f()}})(function(){var define,module,exports;return (function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.tokenizer = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var abbreviations;
 var englishAbbreviations = [
     "al",
@@ -179,23 +179,6 @@ exports.isBoundaryChar = function(word) {
 
 },{}],2:[function(require,module,exports){
 
-module.exports = function sanitizeHtml(text, opts) {
-  // Strip HTML from Text using browser HTML parser
-  if ((typeof text == 'string' || text instanceof String) && typeof document !== "undefined") {
-    var $div = document.createElement("DIV");
-    $div.innerHTML = text;
-    text = ($div.textContent || '').trim();
-  }
-  //DOM Object
-  else if (typeof text === 'object' && text.textContent) {
-    text = (text.textContent || '').trim();
-  }
-
-  return text;
-};
-
-},{}],3:[function(require,module,exports){
-
 exports.endsWithChar = function ends_with_char(word, c) {
     if (c.length > 1) {
         return c.indexOf(word.slice(-1)) > -1;
@@ -207,22 +190,34 @@ exports.endsWithChar = function ends_with_char(word, c) {
 exports.endsWith = function ends_with(word, end) {
     return word.slice(word.length - end.length) === end;
 };
+},{}],3:[function(require,module,exports){
+
+module.exports = function sanitizeHtml(text, opts) {
+  // Strip HTML from Text using browser HTML parser
+  if (typeof text == 'string' || text instanceof String) {
+    var $div = document.createElement("DIV");
+    $div.innerHTML = text;
+    text =  ($div.textContent || '').trim();
+  }
+  //DOM Object
+  else if (typeof text === 'object' && text.textContent) {
+    text = (text.textContent || '').trim();
+  }
+
+  return text;
+};
+
 },{}],4:[function(require,module,exports){
 /*jshint node:true, laxcomma:true */
 "use strict";
 
 var sanitizeHtml = require('sanitize-html');
 
-var stringHelper = require('./stringHelper');
+var String = require('./String');
 var Match  = require('./Match');
 
 var newline_placeholder = " @~@ ";
 var newline_placeholder_t = newline_placeholder.trim();
-
-
-var whiteSpaceCheck = new RegExp("\\S", "");
-var addNewLineBoundaries = new RegExp("\\n+|[-#=_+*]{4,}", "g");
-var splitIntoWords = new RegExp("\\S+|\\n", "g");
 
 
 // Split the entry into sentences.
@@ -231,18 +226,12 @@ exports.sentences = function(text, user_options) {
         return [];
     }
 
-    if (!whiteSpaceCheck.test(text)) {
-      // whitespace-only string has no sentences
-      return [];
-    }
-
     var options = {
         "newline_boundaries"  : false,
         "html_boundaries"     : false,
         "html_boundaries_tags": ["p","div","ul","ol"],
         "sanitize"            : false,
         "allowed_tags"        : false,
-        "preserve_whitespace" : false,
         "abbreviations"       : null
     };
 
@@ -260,7 +249,7 @@ exports.sentences = function(text, user_options) {
     Match.setAbbreviations(options.abbreviations);
 
     if (options.newline_boundaries) {
-        text = text.replace(addNewLineBoundaries, newline_placeholder);
+        text = text.replace(/\n+|[-#=_+*]{4,}/g, newline_placeholder);
     }
 
     if (options.html_boundaries) {
@@ -277,26 +266,9 @@ exports.sentences = function(text, user_options) {
         text = sanitizeHtml(text, { "allowedTags" : options.allowed_tags });
     }
 
-
     // Split the text into words
-    var words;
-    var tokens;
-
-    // Split the text into words
-    if (options.preserve_whitespace) {
-        // <br> tags are the odd man out, as whitespace is allowed inside the tag
-        tokens = text.split(/(<br\s*\/?>|\S+|\n+)/);
-
-        // every other token is a word
-        words = tokens.filter(function (token, ii) {
-          return ii % 2;
-        });
-    }
-    else {
-        // - see http://blog.tompawlak.org/split-string-into-tokens-javascript
-        words = text.trim().match(splitIntoWords);
-    }
-
+    // - see http://blog.tompawlak.org/split-string-into-tokens-javascript
+    var words = text.trim().match(/\S+|\n/g);
 
     var wordCount = 0;
     var index = 0;
@@ -320,7 +292,10 @@ exports.sentences = function(text, user_options) {
             wordCount = 0;
         }
 
-        if (Match.isBoundaryChar(words[i]) || stringHelper.endsWithChar(words[i], "?!") || words[i] === newline_placeholder_t) {
+        if (Match.isBoundaryChar(words[i])      ||
+            String.endsWithChar(words[i], "?!") ||
+            words[i] === newline_placeholder_t)
+        {
             if ((options.newline_boundaries || options.html_boundaries) && words[i] === newline_placeholder_t) {
                 current.pop();
             }
@@ -334,14 +309,15 @@ exports.sentences = function(text, user_options) {
         }
 
 
-        if (stringHelper.endsWithChar(words[i], "\"") || stringHelper.endsWithChar(words[i], "”")) {
+        if (String.endsWithChar(words[i], "\"") || String.endsWithChar(words[i], "”")) {
+            // endQuote = words[i].slice(-1);
             words[i] = words[i].slice(0, -1);
         }
 
         // A dot might indicate the end sentences
         // Exception: The next sentence starts with a word (non abbreviation)
         //            that has a capital letter.
-        if (stringHelper.endsWithChar(words[i], '.')) {
+        if (String.endsWithChar(words[i], '.')) {
             // Check if there is a next word
             // This probably needs to be improved with machine learning
             if (i+1 < L) {
@@ -375,7 +351,7 @@ exports.sentences = function(text, user_options) {
                 }
                 else {
                     // Skip ellipsis
-                    if (stringHelper.endsWith(words[i], "..")) {
+                    if (String.endsWith(words[i], "..")) {
                         continue;
                     }
 
@@ -430,7 +406,6 @@ exports.sentences = function(text, user_options) {
         sentences.push(current);
     }
 
-
     /** After processing */
     var result   = [];
     var sentence = "";
@@ -441,25 +416,12 @@ exports.sentences = function(text, user_options) {
     });
 
     for (var i=0; i < sentences.length; i++) {
-        if (options.preserve_whitespace && !options.newline_boundaries && !options.html_boundaries) {
-          // tokens looks like so: [leading-space token, non-space token, space
-          // token, non-space token, space token... ]. In other words, the first
-          // item is the leading space (or the empty string), and the rest of
-          // the tokens are [non-space, space] token pairs.
-          var tokenCount = sentences[i].length * 2;
-
-          if (i === 0) {
-            tokenCount += 1;
-          }
-
-          sentence = tokens.splice(0, tokenCount).join('');
-        }
-        else {
-          sentence = sentences[i].join(" ");
-        }
+        sentence = sentences[i].join(" ");
 
         // Single words, could be "enumeration lists"
-        if (sentences[i].length === 1 && sentences[i][0].length < 4 && sentences[i][0].indexOf('.') > -1) {
+        if (sentences[i].length === 1 && sentences[i][0].length < 4 &&
+            sentences[i][0].indexOf('.') > -1)
+        {
             // Check if there is a next sentence
             // It should not be another list item
             if (sentences[i+1] && sentences[i+1][0].indexOf('.') < 0) {
@@ -474,5 +436,5 @@ exports.sentences = function(text, user_options) {
     return result;
 };
 
-},{"./Match":1,"./stringHelper":3,"sanitize-html":2}]},{},[4])(4)
+},{"./Match":1,"./String":2,"sanitize-html":3}]},{},[4])(4)
 });
