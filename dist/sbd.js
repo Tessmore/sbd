@@ -1,4 +1,4 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.tokenizer = f()}})(function(){var define,module,exports;return (function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.tokenizer = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var abbreviations;
 var englishAbbreviations = [
     "al",
@@ -431,47 +431,42 @@ exports.sentences = function(text, user_options) {
     }
 
 
-    /** After processing */
-    var result   = [];
-    var sentence = "";
-
     // Clear "empty" sentences
     sentences = sentences.filter(function(s) {
         return s.length > 0;
     });
 
-    for (var i=0; i < sentences.length; i++) {
-        if (options.preserve_whitespace && !options.newline_boundaries && !options.html_boundaries) {
-          // tokens looks like so: [leading-space token, non-space token, space
-          // token, non-space token, space token... ]. In other words, the first
-          // item is the leading space (or the empty string), and the rest of
-          // the tokens are [non-space, space] token pairs.
-          var tokenCount = sentences[i].length * 2;
-
-          if (i === 0) {
-            tokenCount += 1;
+    var result = sentences.slice(1).reduce(function (out, sentence) {
+      var lastSentence = out[out.length - 1];
+      // Single words, could be "enumeration lists"
+      if (lastSentence.length === 1 && /^.{1,2}[.]$/.test(lastSentence[0])) {
+          // Check if there is a next sentence
+          // It should not be another list item
+          if (!/[.]/.test(sentence[0])) {
+              out.pop()
+              out.push(lastSentence.concat(sentence));
+              return out;
           }
+      }
+      out.push(sentence);
+      return out;
+    }, [ sentences[0] ]);
 
-          sentence = tokens.splice(0, tokenCount).join('');
+    // join tokens back together
+    return result.map(function (sentence, ii) {
+      if (options.preserve_whitespace && !options.newline_boundaries && !options.html_boundaries) {
+        // tokens looks like so: [leading-space token, non-space token, space
+        // token, non-space token, space token... ]. In other words, the first
+        // item is the leading space (or the empty string), and the rest of
+        // the tokens are [non-space, space] token pairs.
+        var tokenCount = sentence.length * 2;
+        if (ii === 0) {
+          tokenCount += 1;
         }
-        else {
-          sentence = sentences[i].join(" ");
-        }
-
-        // Single words, could be "enumeration lists"
-        if (sentences[i].length === 1 && sentences[i][0].length < 4 && sentences[i][0].indexOf('.') > -1) {
-            // Check if there is a next sentence
-            // It should not be another list item
-            if (sentences[i+1] && sentences[i+1][0].indexOf('.') < 0) {
-                sentence += " " + sentences[i+1].join(" ");
-                i++;
-            }
-        }
-
-        result.push(sentence);
-    }
-
-    return result;
+        return tokens.splice(0, tokenCount).join('');
+      }
+      return sentence.join(" ");
+    });
 };
 
 },{"./Match":1,"./stringHelper":3,"sanitize-html":2}]},{},[4])(4)
