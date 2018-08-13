@@ -11,9 +11,11 @@ Split text into sentences with a `vanilla` rule based approach (i.e working ~95%
 
 ## Installation
 
-Use [npm](http://npmjs.org):
+Use [npm](http://npmjs.org) or [yarn](https://yarnpkg.com/en/):
 
     $ npm install sbd
+
+    $ yarn add sbd
 
 
 ## How to

@@ -70,7 +70,6 @@ describe('Abbreviations in sentences', function () {
 
 
         it("should get 1 sentence", function () {
-            // console.log("#",sentencesEN, sentencesPL, sentencesPL.length)
             assert.equal(sentencesEN.length, 3);
             assert.equal(sentencesPL.length, 1);
         });
