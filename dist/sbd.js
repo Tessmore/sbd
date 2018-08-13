@@ -1,4 +1,4 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.tokenizer = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.tokenizer = f()}})(function(){var define,module,exports;return (function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 var abbreviations;
 var englishAbbreviations = [
     "al",
@@ -71,13 +71,13 @@ exports.setAbbreviations = function(abbr) {
     }
 }
 
-exports.isCapitalized = function(str) {
-    return /^[A-Z][a-z].*/.test(str) || this.isNumber(str);
+var isCapitalized = exports.isCapitalized = function(str) {
+    return /^[A-Z][a-z].*/.test(str) || isNumber(str);
 }
 
 // Start with opening quotes or capitalized letter
 exports.isSentenceStarter = function(str) {
-    return this.isCapitalized(str) || /``|"|'/.test(str.substring(0,2));
+    return isCapitalized(str) || /``|"|'/.test(str.substring(0,2));
 }
 
 exports.isCommonAbbreviation = function(str) {
@@ -102,22 +102,21 @@ exports.isDottedAbbreviation = function(word) {
     return matches && matches[0].length > 0;
 }
 
-// TODO look for next words, if multiple capitalized -> not sentence ending
+// TODO look for next words, if multiple are capitalized,
+// then it's probably not a sentence ending
 exports.isCustomAbbreviation = function(str) {
     if (str.length <= 3) {
         return true;
     }
 
-    return this.isCapitalized(str);
+    return isCapitalized(str);
 }
 
 // Uses current word count in sentence and next few words to check if it is
 // more likely an abbreviation + name or new sentence.
-
-// ~ TODO Perhaps also consider prev. word?
 exports.isNameAbbreviation = function(wordCount, words) {
     if (words.length > 0) {
-        if (wordCount < 5 && words[0].length < 6 && this.isCapitalized(words[0])) {
+        if (wordCount < 5 && words[0].length < 6 && isCapitalized(words[0])) {
             return true;
         }
 
@@ -131,7 +130,7 @@ exports.isNameAbbreviation = function(wordCount, words) {
     return false;
 }
 
-exports.isNumber = function(str, dotPos) {
+var isNumber = exports.isNumber = function(str, dotPos) {
     if (dotPos) {
         str = str.slice(dotPos-1, dotPos+2);
     }
