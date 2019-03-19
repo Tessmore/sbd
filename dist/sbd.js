@@ -1,5 +1,6 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.tokenizer = f()}})(function(){var define,module,exports;return (function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 var abbreviations;
+
 var englishAbbreviations = [
     "al",
     "adj",
@@ -64,7 +65,7 @@ var englishAbbreviations = [
 ];
 
 exports.setAbbreviations = function(abbr) {
-    if(abbr){
+    if (abbr) {
         abbreviations = abbr;
     } else {
         abbreviations = englishAbbreviations;
@@ -81,7 +82,7 @@ exports.isSentenceStarter = function(str) {
 }
 
 exports.isCommonAbbreviation = function(str) {
-    return ~abbreviations.indexOf(str.replace(/\W+/g, ''));
+    return ~abbreviations.indexOf(str.replace(/[^a-z\u0400-\u04FF]/gi, ""));
 }
 
 // This is going towards too much rule based
@@ -208,12 +209,11 @@ exports.endsWith = function ends_with(word, end) {
 };
 },{}],4:[function(require,module,exports){
 /*jshint node:true, laxcomma:true */
-"use strict";
 
-var sanitizeHtml = require('sanitize-html');
+var sanitizeHtml = require("sanitize-html");
 
-var stringHelper = require('./stringHelper');
-var Match  = require('./Match');
+var stringHelper = require("./stringHelper");
+var Match  = require("./Match");
 
 var newline_placeholder = " @~@ ";
 var newline_placeholder_t = newline_placeholder.trim();
@@ -315,7 +315,7 @@ exports.sentences = function(text, user_options) {
         current.push(words[i]);
 
         // Sub-sentences, reset counter
-        if (~words[i].indexOf(',')) {
+        if (~words[i].indexOf(",")) {
             wordCount = 0;
         }
 
@@ -340,7 +340,7 @@ exports.sentences = function(text, user_options) {
         // A dot might indicate the end sentences
         // Exception: The next sentence starts with a word (non abbreviation)
         //            that has a capital letter.
-        if (stringHelper.endsWithChar(words[i], '.')) {
+        if (stringHelper.endsWithChar(words[i], ".")) {
             // Check if there is a next word
             // This probably needs to be improved with machine learning
             if (i+1 < L) {
@@ -437,6 +437,7 @@ exports.sentences = function(text, user_options) {
 
     var result = sentences.slice(1).reduce(function (out, sentence) {
       var lastSentence = out[out.length - 1];
+
       // Single words, could be "enumeration lists"
       if (lastSentence.length === 1 && /^.{1,2}[.]$/.test(lastSentence[0])) {
           // Check if there is a next sentence
@@ -447,7 +448,9 @@ exports.sentences = function(text, user_options) {
               return out;
           }
       }
+
       out.push(sentence);
+
       return out;
     }, [ sentences[0] ]);
 
@@ -459,11 +462,14 @@ exports.sentences = function(text, user_options) {
         // item is the leading space (or the empty string), and the rest of
         // the tokens are [non-space, space] token pairs.
         var tokenCount = sentence.length * 2;
+
         if (ii === 0) {
           tokenCount += 1;
         }
-        return tokens.splice(0, tokenCount).join('');
+
+        return tokens.splice(0, tokenCount).join("");
       }
+
       return sentence.join(" ");
     });
 };
