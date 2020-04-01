@@ -10,6 +10,9 @@
     "build": "npm run build:js && npm run build:minify",
     "benchmark": "./node_modules/.bin/matcha"
   },
+  "resolutions": {
+    "**/minimist": "1.2.2"
+  },
   "homepage": "http://github.com/Tessmore/sbd",
   "repository": {
     "type": "git",
@@ -26,10 +29,10 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "mocha": "6.1.4"
+    "mocha": "7.1.1"
   },
   "dependencies": {
-    "sanitize-html": "^1.20.1"
+    "sanitize-html": "^1.22.1"
   },
   "browser": {
     "sanitize-html": "./lib/sanitize-html-browser.js"
