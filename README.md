@@ -1,5 +1,5 @@
 Sentence Boundary Detection (SBD)
-==================
+=================================
 
 Split text into sentences with a `vanilla` rule based approach (i.e working ~95% of the time).
 
