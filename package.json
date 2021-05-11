@@ -1,6 +1,6 @@
 {
   "name": "sbd",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "Split text into sentences with Sentence Boundary Detection (SBD).",
   "main": "lib/tokenizer.js",
   "scripts": {
@@ -9,9 +9,6 @@
     "build:minify": "uglifyjs dist/sbd.js > dist/sbd.min.js",
     "build": "npm run build:js && npm run build:minify",
     "benchmark": "./node_modules/.bin/matcha"
-  },
-  "resolutions": {
-    "**/minimist": "1.2.5"
   },
   "homepage": "http://github.com/Tessmore/sbd",
   "repository": {
