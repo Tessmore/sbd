@@ -8,6 +8,10 @@ Split text into sentences with a `vanilla` rule based approach (i.e working ~95%
     * Skips numbers/currency
     * Skips urls, websites, email addresses, phone nr.
     * Counts ellipsis and ?! as single punctuation
+ 
+### Demo
+
+[http://tessmore.github.io/sbd/](http://tessmore.github.io/sbd/)
 
 ## Installation
 
