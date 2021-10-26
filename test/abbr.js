@@ -33,6 +33,15 @@ describe('Abbreviations in sentences', function () {
         });
     });
 
+    describe('Skip dotted abbreviations with multiple capital letters', function () {
+        const entry = "State-owned lender Caixa Economica Federal (CEF.UL) is planning to list its asset management unit and the payments firm Elo by the beginning of 2022, Chief Executive Pedro Guimaraes said in an interview.";
+        const sentences = tokenizer.sentences(entry);
+
+        it("should get 1 sentence", function () {
+            assert.equal(sentences.length, 1);
+        });
+    });
+    
     describe('Skip common abbreviations', function () {
         const entry = "Fig. 2. displays currency rates i.e. something libsum. Currencies widely available (i.e. euro, dollar, pound), or alternatively (e.g. €, $, etc.)";
         const sentences = tokenizer.sentences(entry);
